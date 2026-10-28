@@ -1,0 +1,118 @@
+# Week 1 V1 — Course introduction and state-by-state payoffs (English dub script)
+# Source: week01/video1/script.md (Korean original). Same slide structure [Snn].
+# Format: one sentence per line, blank line = paragraph pause, # lines ignored by synthesize.py.
+# Terminology follows the textbook's English references (payoff, no-arbitrage, digital buffered notes).
+
+## [S01] Title (0:00)
+
+Welcome to Understanding Financial Engineering, lecture one.
+
+## [S02] The map of this course (0:20)
+
+Before we begin, let me show you the map of where this course is going.
+Over the semester, we will follow one single story.
+We decompose complex financial products into simple payoffs, and we price them by one principle: portfolios that pay the same must cost the same.
+Then we extend this from a single trade to dynamic replication, trading through time, and we rebuild the bond market from basic cash flows, maturity by maturity.
+At the end, we ask what to do when exact replication is impossible, which leads us to optimization and deep hedging.
+Every week we will check where we are on this map.
+Today is the starting point: learning to see financial products as payoffs.
+
+## [S03] The question of this episode (1:30)
+
+Here is the question for this episode.
+Banks sell complicated structured products with prospectuses dozens of pages long.
+How can we understand such a product in a single picture?
+The answer is surprisingly simple.
+Strip away the name and the marketing, and just write down how much the product pays in the future.
+The amount a financial product pays in the future is called its payoff.
+
+## [S04] A real product: digital buffered notes (2:30)
+
+Let us start with a real product.
+In July twenty twenty-six, J.P. Morgan issued a product called digital buffered notes, linked to the S and P five hundred index.
+The face amount is one thousand dollars per unit, and what you receive at maturity depends on the index level on that day.
+Here are the terms.
+As long as the index has not fallen more than fifteen percent below its initial level, the note pays a fixed return of seven point six nine percent.
+That sounds complicated when you hear it in words.
+So let us write it down state by state.
+
+## [S05] Two states (4:00)
+
+Call the initial index level S zero, and the index at maturity S T.
+If the final index is at least eighty-five percent of the initial level, the investor receives one thousand seventy-six dollars and ninety cents.
+Whether the index rose a lot, rose a little, stayed flat, or even fell within fifteen percent, makes no difference at all.
+Within this range, the payment is always the same.
+But if the final index is below eighty-five percent of the initial level, you start losing principal.
+The further the index falls below the buffer, the less you receive.
+So the world of this product splits into exactly two states.
+One state where the payment is fixed, and one state where the payment follows the index down.
+A structure where the payment depends on which future state is realized is called a state-by-state payoff.
+
+## [S06] The payoff as a formula (6:00)
+
+Let us translate what we just said into a formula, a piecewise function.
+If the final index is at or above the buffer, you get one thousand seventy-six point nine dollars.
+Below the buffer, you get the principal of one thousand dollars adjusted by the index decline.
+You do not need to understand every term in this formula right now.
+Only one thing matters.
+Even a product with a prospectus dozens of pages long becomes this short, once you split the states and write down the payment in each one.
+
+## [S07] Reading the picture (8:00)
+
+Now let us look at the same thing as a picture.
+The horizontal axis is the final index divided by the initial index, and the vertical axis is the payment at maturity.
+To the right of the buffer at zero point eight five, the payment is flat at one thousand seventy-six point nine dollars.
+To the left, the payment falls along a straight line as the index declines.
+And that line is steeper than it looks.
+If we normalize the vertical axis by the principal, the slope is not one, but one divided by zero point eight five, roughly one point one seven six.
+Below the buffer, every additional one percentage point drop in the index costs the investor about one point one eight percentage points of return.
+Now look closely at the buffer itself.
+The moment the index reaches eighty-five, the payment jumps from one thousand dollars to one thousand seventy-six point nine, a jump of seventy-six dollars and ninety cents.
+The open dot and the closed dot in the picture mark exactly this discontinuity.
+
+## [S08] The scenario table (11:00)
+
+Let us look at the scenario table that appears in the prospectus.
+The two most striking rows are the index at eighty-five and at eighty-four point nine nine.
+At eighty-five you receive one thousand seventy-six dollars and ninety cents, but just a tiny step down, at eighty-four point nine nine, you receive about nine hundred ninety-nine dollars and eighty-eight cents.
+One hair below the boundary, and the entire fixed return disappears.
+Now look at the other extreme.
+Even if the index rises fifty percent, to one hundred fifty, you still receive only one thousand seventy-six dollars and ninety cents.
+The upside is capped.
+To summarize: this product absorbs a limited range of losses, and in exchange, it gives up the upside beyond a fixed return.
+That one sentence is the summary of the entire prospectus.
+
+## [S09] Quick recap (14:00)
+
+Let us pause and recap.
+The first step in understanding any financial product is to write down its payment in each future state.
+We expressed the same information in three ways.
+A table of states, a piecewise formula, and a picture.
+They carry the same content, and you can start from whichever feels most natural.
+
+## [S10] Demo: drawing payoffs in Python (15:00)
+
+Now let us draw this picture ourselves.
+In Python, we create a range of final index values, and translate the piecewise function directly into code.
+A single call to numpy's where function handles the piecewise definition in one line.
+When we plot it, we get exactly the same shape as the figure in the textbook.
+Let us also check the table values.
+Plug in eighty-five, and we get one thousand seventy-six point nine.
+Plug in eighty-four point nine nine, and we get nine hundred ninety-nine point eight eight.
+We have just reproduced the scenario table from the prospectus.
+This is exactly what you will do in this week's lab session.
+
+## [S11] Key takeaways (18:00)
+
+Here are today's key takeaways.
+A financial product can be expressed as a table, a vector, a function, or a picture of its state-by-state payoffs.
+However complicated the name or the description, writing down the payment in each future situation makes the structure far simpler.
+And the whole subject of financial engineering is this process: decompose complex products into simple payoffs, and reassemble their prices to price the original product.
+
+## [S12] Next episode and a check question (19:00)
+
+In the next episode, we will actually decompose the payoffs we wrote down today.
+In a simple world with three states, we will build basic payoffs as building blocks, and we will cut a forward contract into four regions to watch the moment an option is born.
+Let me leave you with one check question.
+For the digital buffered note we saw today, verify by direct calculation that when the final index is seventy, the payment is eight hundred twenty-three dollars and fifty-three cents.
+See you in the next episode.
