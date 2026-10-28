@@ -1,0 +1,5 @@
+# 더빙 파이프라인 의존성
+# 주의: setuptools 81 이상에서는 pkg_resources가 제거되어 chatterbox의
+# 워터마커(perth) 로딩이 실패한다. 반드시 80.9.0으로 고정할 것.
+chatterbox-tts
+setuptools==80.9.0
