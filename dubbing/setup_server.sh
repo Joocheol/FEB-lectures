@@ -13,8 +13,34 @@ set -euo pipefail
 VENV="${DUB_VENV:-$HOME/dub-env}"
 HERE="$(cd "$(dirname "$0")" && pwd)"
 
-echo "[1/4] venv 생성: $VENV"
-python3 -m venv "$VENV"
+echo "[1/4] 파이썬 환경 생성: $VENV"
+# 이전 실패로 남은 깨진 환경(pip 없음) 정리
+if [ -d "$VENV" ] && [ ! -x "$VENV/bin/pip" ]; then
+  echo "  깨진 환경 발견 — 삭제 후 재생성"
+  rm -rf "$VENV"
+fi
+
+if [ ! -x "$VENV/bin/pip" ]; then
+  if python3 -m venv "$VENV" 2>/dev/null && [ -x "$VENV/bin/pip" ]; then
+    echo "  python3 venv 사용"
+  else
+    # python3-venv 패키지가 없는 서버(sudo 불가): Miniforge(conda)로 대체
+    rm -rf "$VENV"
+    echo "  venv 모듈 없음 — Miniforge(conda)로 환경 생성 (sudo 불필요)"
+    if command -v conda >/dev/null 2>&1; then
+      CONDA="$(command -v conda)"
+    else
+      if [ ! -x "$HOME/miniforge3/bin/conda" ]; then
+        curl -fsSL -o /tmp/miniforge-$USER.sh \
+          "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+        bash /tmp/miniforge-$USER.sh -b -p "$HOME/miniforge3"
+        rm -f /tmp/miniforge-$USER.sh
+      fi
+      CONDA="$HOME/miniforge3/bin/conda"
+    fi
+    "$CONDA" create -y -q -p "$VENV" python=3.11 pip
+  fi
+fi
 "$VENV/bin/pip" install --upgrade pip -q
 
 echo "[2/4] 의존성 설치 (PyTorch 포함, 수 분 소요)"
